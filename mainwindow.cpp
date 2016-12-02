@@ -8,8 +8,8 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<std::string>("std::string");
 
     ui->setupUi(this);
-    createActions();
-    createMenus();
+//    createActions();
+//    createMenus();
 }
 
 MainWindow::~MainWindow()
@@ -17,16 +17,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::createActions()
-{
-    startAct = new QAction("Start router", this);
-}
+//void MainWindow::createActions()
+//{
+//    startAct = new QAction("Start router", this);
+//}
 
-void MainWindow::createMenus()
-{
-    routerMenu = menuBar()->addMenu("Router");
-    routerMenu->addAction(startAct);
-}
+//void MainWindow::createMenus()
+//{
+//    routerMenu = menuBar()->addMenu("Router");
+//    routerMenu->addAction(startAct);
+//}
 
 void MainWindow::msgReceivedSlot(std::string nick, std::string msg)
 {

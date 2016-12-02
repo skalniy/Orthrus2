@@ -25,8 +25,8 @@ private:
 
     QMenu* routerMenu;
     QAction* startAct;
-    void createActions();
-    void createMenus();
+//    void createActions();
+//    void createMenus();
 
 signals:
     void msgSend(std::string);

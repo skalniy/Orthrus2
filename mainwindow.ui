@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>531</width>
-    <height>286</height>
+    <height>289</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Orthrus</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QWidget" name="">
@@ -20,7 +20,7 @@
       <x>10</x>
       <y>10</y>
       <width>514</width>
-      <height>429</height>
+      <height>211</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">

@@ -8,8 +8,6 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<std::string>("std::string");
 
     ui->setupUi(this);
-//    createActions();
-//    createMenus();
 }
 
 MainWindow::~MainWindow()
@@ -17,16 +15,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//void MainWindow::createActions()
-//{
-//    startAct = new QAction("Start router", this);
-//}
-
-//void MainWindow::createMenus()
-//{
-//    routerMenu = menuBar()->addMenu("Router");
-//    routerMenu->addAction(startAct);
-//}
 
 void MainWindow::msgReceivedSlot(std::string nick, std::string msg)
 {
@@ -44,6 +32,7 @@ void MainWindow::on_sendButton_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
+    router.reset(nullptr);
     router.reset(new RouterController(this, ui->hostPortBox->value(),
                                       ui->hostnameEdit->text().toStdString()));
     router->start();

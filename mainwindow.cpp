@@ -47,3 +47,4 @@ void MainWindow::on_connectButton_clicked()
 {
     emit connectClicked(ui->peerIPEdit->text().toStdString() + ':' + std::to_string(ui->peerPortBox->value()));
 }
+// нет проверки на правильность введенных данных

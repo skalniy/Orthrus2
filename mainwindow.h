@@ -34,6 +34,7 @@ signals:
 
 public slots:
     void msgReceivedSlot(std::string nick, std::string msg);
+    void error_handler(std::string, std::string);
 
 private slots:
     void on_sendButton_clicked();

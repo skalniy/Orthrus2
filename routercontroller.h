@@ -30,6 +30,7 @@ signals:
     void msgReceived(std::string, std::string);
     void msgSend(std::string);
     void connectClicked(std::string addr);
+    void error(std::string, std::string);
 
 public slots:
     void start(void);

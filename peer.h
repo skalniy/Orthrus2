@@ -29,6 +29,8 @@ public:
 
 signals:
     void msgReceived(std::string, std::string);
+    void error(std::string, std::string);
+    void closedPipe(std::string);
 
 public slots:
     inline void listen()

@@ -36,10 +36,12 @@ public:
 
 signals:
     void msgReceived(std::string, std::string);
+    void error(std::string, std::string);
 
 public slots:
     void msgSendSlot(std::string msg);
     void connect(std::string addr);
+    void closedPipe(std::string addr);
 
 };
 

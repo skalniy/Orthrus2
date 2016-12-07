@@ -36,11 +36,12 @@ void Peer::read_handler(const boost::system::error_code& ec,
     std::cout << msg << std::endl;
 }
 
-void Peer::write_handler(const boost::system::error_code& error,
+void Peer::write_handler(const boost::system::error_code& error_,
     std::size_t bytes_transferred)
 {
-    if (error) {
-        std::cout << "error: " << error.message() << std::endl;
-        return;
-    }
+    if (error_.value() == boost::system::errc::broken_pipe)
+        emit closedPipe(get_remote_address());
+    else if (error_)
+        emit error(nickname, error_.message());
+
 }

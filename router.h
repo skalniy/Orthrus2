@@ -10,7 +10,9 @@
 
 class Router : public QObject
 {
-    Q_OBJECT
+    Q_OBJECT // qt везде пробрался, причем, мне кажется, необоснованно
+    // хотите взаимодействовать сигналами слотами -- делайте адаптор,
+    // но не портить же все классы зависимостью от qt!
 
     std::string hostname;
     boost::asio::ip::tcp::endpoint ep;
@@ -35,10 +37,10 @@ public:
     void stop();
 
 signals:
-    void msgReceived(std::string, std::string);
+    void msgReceived(std::string, std::string); // это решается через callback
 
 public slots:
-    void msgSendSlot(std::string msg);
+    void msgSendSlot(std::string msg); // это решается через методы
     void connect(std::string addr);
 
 };

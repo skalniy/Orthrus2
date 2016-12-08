@@ -24,7 +24,7 @@ void MainWindow::msgReceivedSlot(std::string nick, std::string msg)
 void MainWindow::on_sendButton_clicked()
 {
     std::string msg = ui->msgEdit->toPlainText().toStdString();
-    emit msgSend(msg);
+    emit msgSend(msg); // router->send(msg);
     ui->msgView->append(QString::fromStdString("["+router->get_hostname()+" (you)] ")
                         + ui->msgEdit->toPlainText());
     ui->msgEdit->clear();
@@ -46,4 +46,5 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_connectButton_clicked()
 {
     emit connectClicked(ui->peerIPEdit->text().toStdString() + ':' + std::to_string(ui->peerPortBox->value()));
+    // router->connect(...)
 }

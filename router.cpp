@@ -70,12 +70,16 @@ void Router::accept_handler(const boost::system::error_code& error,
     QObject::connect(new_peer.get(), &Peer::msgReceived, this, &Router::msgReceived);
     new_peer->listen();
     share_peers(new_peer->get_sock());
+    // либо красными буквами писать, что io_service запускать только в одном треде,
+    // либо таки синхронизацию добавить
+    // с io_service в одном треде один медленный абонент тормозит всех
+    // может, все операции сделать асинхронными?
     peers.emplace(new_peer->get_remote_address(), new_peer);
 }
 
 void Router::msgSendSlot(std::string msg) {
     for (auto peer : peers)
-        peer.second->write(msg+'\n');
+        peer.second->write(msg+'\n'); // что с многострочными сообщениями?
 }
 
 void Router::connect(std::string addr)

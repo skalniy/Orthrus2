@@ -14,7 +14,7 @@ Router::Router(
     , ep(boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port_num))
     , acceptor(std::make_shared<boost::asio::ip::tcp::acceptor>(*io_service, ep, true))
 {} catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+   emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 void Router::start() try
@@ -22,7 +22,7 @@ void Router::start() try
     acceptor->listen();
     init();
 } catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+   emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 void Router::stop() try
@@ -32,7 +32,7 @@ void Router::stop() try
         acceptor->close();
     }
 } catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+    emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 void Router::init() try
@@ -44,7 +44,7 @@ void Router::init() try
     acceptor->async_accept(*sock,
         boost::bind(&Router::accept_handler, this, _1, sock));
 } catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+    emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 void Router::share_peers(std::shared_ptr<boost::asio::ip::tcp::socket> target) try
@@ -54,14 +54,14 @@ void Router::share_peers(std::shared_ptr<boost::asio::ip::tcp::socket> target) t
         boost::asio::write(*target,
             boost::asio::buffer(peer.second->get_remote_address() + '\n'));
 } catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+    emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 void Router::accept_handler(const boost::system::error_code& error_,
     std::shared_ptr<boost::asio::ip::tcp::socket> sock) try
 {
     if (error_) {
-        emit error("Acceptor", error_.message());
+        emit error("Acceptor", "acc "+error_.message());
         return;
     }
     init();
@@ -75,19 +75,20 @@ void Router::accept_handler(const boost::system::error_code& error_,
                 );
     std::shared_ptr<Peer> new_peer = std::make_shared<Peer>(sock);
     QObject::connect(new_peer.get(), &Peer::error, this, &Router::error);
+    QObject::connect(new_peer.get(), &Peer::closedPipe, this, &Router::closedPipe);
     QObject::connect(new_peer.get(), &Peer::msgReceived, this, &Router::msgReceived);
     new_peer->listen();
     share_peers(new_peer->get_sock());
     peers.emplace(new_peer->get_remote_address(), new_peer);
 } catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+    emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 void Router::msgSendSlot(std::string msg)  try {
     for (auto peer : peers)
         peer.second->write(msg+'\n');
 } catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+    emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 void Router::connect(std::string addr) try
@@ -113,10 +114,11 @@ void Router::connect(std::string addr) try
     peers.emplace(peer->get_remote_address(), peer);
     read_peers(peer->get_sock());
     QObject::connect(peer.get(), &Peer::error, this, &Router::error);
+    QObject::connect(peer.get(), &Peer::closedPipe, this, &Router::closedPipe);
     QObject::connect(peer.get(), &Peer::msgReceived, this, &Router::msgReceived);
     peer->listen();
 } catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+    emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 
@@ -140,10 +142,11 @@ void Router::read_peers(std::shared_ptr<boost::asio::ip::tcp::socket> sock) try
             connect(addr);
     }
 } catch (boost::system::system_error& e) {
-    emit error("Acceptor", e.what());
+    emit error("Acceptor", "acc "+std::string(e.what()));
 }
 
 
 void Router::closedPipe(std::string addr) {
+    emit msgReceived(peers[addr]->get_nickname(), "DISCONNECTED");
     peers.erase(addr);
 }

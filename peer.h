@@ -20,12 +20,15 @@ class Peer : public QObject
 
 public:
     explicit Peer(std::shared_ptr<boost::asio::ip::tcp::socket> sock_, QObject *parent = 0);
+    ~Peer();
 
     inline std::string get_remote_address()
     { return sock->remote_endpoint().address().to_string() + ':' + remote_port; }
 
     inline std::shared_ptr<boost::asio::ip::tcp::socket> get_sock()
     { return sock; }
+
+    inline std::string get_nickname() { return nickname; }
 
 signals:
     void msgReceived(std::string, std::string);

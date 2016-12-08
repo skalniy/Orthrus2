@@ -13,21 +13,21 @@ RouterController::RouterController(QObject *parent,
     QObject::connect(this, &RouterController::msgSend, &router, &Router::msgSendSlot);
     QObject::connect(this, &RouterController::connectClicked, &router, &Router::connect);
 } catch (boost::system::system_error& e) {
-    emit error("Router", e.what());
+    emit error("Router", "router "+std::string(e.what()));
 }
 
 RouterController::~RouterController() try
 {
     stop();
 } catch (boost::system::system_error& e) {
-    emit error("Router", e.what());
+    emit error("Router", "router "+std::string(e.what()));
 }
 
 void RouterController::start(void) try
 {
     routerThread.reset(new std::thread(&RouterController::run, this));
 } catch (boost::system::system_error& e) {
-    emit error("Router", e.what());
+    emit error("Router", "router "+std::string(e.what()));
 }
 
 void RouterController::stop() try
@@ -37,7 +37,7 @@ void RouterController::stop() try
     if (routerThread.get())
         routerThread->join();
 } catch (boost::system::system_error& e) {
-    emit error("Router", e.what());
+    emit error("Router", "router "+std::string(e.what()));
 }
 
 void RouterController::run() try
@@ -45,5 +45,5 @@ void RouterController::run() try
     router.start();
     io_service->run();
 } catch (boost::system::system_error& e) {
-    emit error("Router", e.what());
+    emit error("Router", "router "+std::string(e.what()));
 }

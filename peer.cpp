@@ -1,6 +1,6 @@
 #include "peer.h"
 
-Peer::Peer(std::shared_ptr<boost::asio::ip::tcp::socket> sock_, QObject *parent) :
+Peer::Peer(std::shared_ptr<boost::asio::ip::tcp::socket> sock_, QObject *parent) try :
     QObject(parent), sock(sock_),
     buf(std::make_shared<boost::asio::streambuf>()),
     ist(std::make_shared<std::iostream>(buf.get()))
@@ -10,22 +10,35 @@ Peer::Peer(std::shared_ptr<boost::asio::ip::tcp::socket> sock_, QObject *parent)
     boost::asio::read_until(*sock, *buf, '\n');
     std::getline(*ist, remote_port);
     ist->clear();
-    std::cout <<  nickname << remote_port;
+} catch (boost::system::system_error& e) {
+    emit error(nickname, nickname+" "+e.what());
 }
 
-void Peer::write(const std::string& msg)
+Peer::~Peer() { sock->cancel(); sock->close(); }
+
+void Peer::write(const std::string& msg) try
 {
     boost::asio::async_write(*sock, boost::asio::buffer(msg),
         boost::bind(&Peer::write_handler, this, _1, _2));
+} catch (boost::system::system_error& e) {
+    emit error(nickname, nickname+" "+e.what());
 }
 
 void Peer::read_handler(const boost::system::error_code& ec,
-    std::size_t bytes_transferred)
+    std::size_t bytes_transferred) try
 {
-    if (ec) {
-        std::cout << "error: " << ec.message() << std::endl;
+    if (ec.value() == boost::system::errc::bad_file_descriptor)
+        emit closedPipe(get_remote_address());
+    else if (ec) {
+        std::cout << "r" <<ec <<":" << ec.message() << std::endl;
+        emit error(nickname, nickname+" "+ec.message());
+        emit closedPipe(get_remote_address());
         return;
     }
+//    if (ec.value() == boost::system::errc::broken_pipe)
+//        emit closedPipe(get_remote_address());
+//    else if (ec)
+//        emit error(nickname, ec.message());
 
     std::string msg;
     std::getline(*ist, msg);
@@ -34,14 +47,21 @@ void Peer::read_handler(const boost::system::error_code& ec,
 
     emit msgReceived(nickname, msg);
     std::cout << msg << std::endl;
+} catch (boost::system::system_error& e) {
+    emit error(nickname, nickname+" "+e.what());
 }
 
-void Peer::write_handler(const boost::system::error_code& error_,
-    std::size_t bytes_transferred)
+void Peer::write_handler(const boost::system::error_code& ec,
+    std::size_t bytes_transferred) try
 {
-    if (error_.value() == boost::system::errc::broken_pipe)
+    if (ec.value() == boost::system::errc::bad_file_descriptor)
         emit closedPipe(get_remote_address());
-    else if (error_)
-        emit error(nickname, error_.message());
+    else if (ec) {
+        std::cout << "w" <<ec <<":" << ec.message() << std::endl;
+        emit error(nickname, nickname+" "+ec.message());
+        return;
+    }
 
+} catch (boost::system::system_error& e) {
+    emit error(nickname, nickname+" "+e.what());
 }

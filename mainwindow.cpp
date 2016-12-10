@@ -70,3 +70,4 @@ void MainWindow::error_handler(std::string name, std::string what)
 {
     QMessageBox::critical(this, QString::fromStdString(name), QString::fromStdString(what));
 }
+// нет проверки на правильность введенных данных

@@ -35,10 +35,6 @@ void Peer::read_handler(const boost::system::error_code& ec,
         emit closedPipe(get_remote_address());
         return;
     }
-//    if (ec.value() == boost::system::errc::broken_pipe)
-//        emit closedPipe(get_remote_address());
-//    else if (ec)
-//        emit error(nickname, ec.message());
 
     std::string msg;
     std::getline(*ist, msg);

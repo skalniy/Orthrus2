@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <memory>
 #include <utility>
-#include "routercontroller.h"
+#include "core/router_controller.hpp"
 
 namespace Ui {
 class MainWindow;
@@ -21,24 +21,21 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    std::unique_ptr<RouterController> router;
+    QString hostname;
 
-    QMenu* routerMenu;
-    QAction* startAct;
-//    void createActions();
-//    void createMenus();
+    std::unique_ptr<Orthrus::RouterController> rc;
 
 signals:
-    void msgSend(std::string);
     void connectClicked(std::string addr);
 
 public slots:
     void msgReceivedSlot(std::string nick, std::string msg);
-    void error_handler(std::string, std::string);
+    void error_handler(std::exception& e);
+
 
 private slots:
     void on_sendButton_clicked();
-    void on_pushButton_clicked();
+    void on_pushButton_clicked(); // config & run
     void on_connectButton_clicked();
 };
 

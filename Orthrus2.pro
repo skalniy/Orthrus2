@@ -21,13 +21,13 @@ LIBS    += -L"/usr/local/lib" \
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        routercontroller.cpp \
-        router.cpp \
-        peer.cpp
+    core/peer.cpp \
+    core/router.cpp \
+    core/router_controller.cpp
 
 HEADERS  += mainwindow.h \
-        routercontroller.h \
-        router.h \
-        peer.h
+    core/peer.hpp \
+    core/router.hpp \
+    core/router_controller.hpp
 
 FORMS    += mainwindow.ui

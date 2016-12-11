@@ -39,8 +39,8 @@ void MainWindow::on_pushButton_clicked() try
     rc.reset(nullptr);
     rc.reset(new Orthrus::RouterController(hostname.toStdString(),
                                            ui->hostPortBox->value(),
-                                           boost::bind(&MainWindow::error_handler, this, _1)));
-    rc->get_router().set_read_msg_cb(boost::bind(&MainWindow::msgReceivedSlot, this, _1, _2));
+                                           std::bind(&MainWindow::error_handler, this, std::placeholders::_1)));
+    rc->get_router().set_read_msg_cb(std::bind(&MainWindow::msgReceivedSlot, this, std::placeholders::_1, std::placeholders::_2));
     rc->start();
     ui->peerIPEdit->setEnabled(true);
     ui->peerPortBox->setEnabled(true);

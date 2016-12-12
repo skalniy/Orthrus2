@@ -1,11 +1,11 @@
-## Orthrus 2
+# Orthrus 2
 Orthrus GUI (Qt) version
 
-# Requirements
+## Requirements
 * [Boost](http://www.boost.org/)
 * [Qt](https://www.qt.io/)
 
-# Set up project
+## Set up project
 ```
 $ git clone https://github.com/thaMosCape/Orthrus2.git
 $ cd Orthrus2

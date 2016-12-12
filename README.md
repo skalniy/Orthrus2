@@ -1,5 +1,7 @@
 # Orthrus 2
-Orthrus GUI (Qt) version
+[Orthrus] (https://github.com/thaMosCape/Orthrus) GUI (Qt) version
+
+[API] (https://github.com/thaMosCape/Orthrus/wiki/Orthrus-API) 
 
 ## Requirements
 * [Boost](http://www.boost.org/)
